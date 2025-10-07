@@ -45,128 +45,157 @@ class HomeActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("") },
-                navigationIcon = {
-                    IconButton(onClick = { /* TODO: Open Drawer */ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.Black)
-                    }
-                },
-                actions = {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile),
-                        contentDescription = "Profile",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .clickable { /* Profile Click */ },
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            // Title
-            Text(
-                text = buildAnnotatedString {
-                    append("Fast and ")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFFEA4335))) {
-                        append("Delicious")
-                    }
-                    append(" Food")
-                },
-                fontSize = 28.sp,
-                lineHeight = 32.sp,
-                color = Color.Black
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background image
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        Scaffold(
+            containerColor = Color.Transparent,
 
-            Spacer(modifier = Modifier.height(16.dp))
+            topBar = {
+                TopAppBar(
+                    title = { Text("") },
+                    modifier = Modifier.padding(top= 20.dp),
 
-            // Search Bar
-            OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                placeholder = { Text("Search your food...") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(50.dp),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Collections
-            val collections = listOf("Burger", "Pizza", "Sushi", "Kebab", "Shawarma")
-            var selectedCategory by remember { mutableStateOf("Burger") }
-
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 8.dp)
-            ) {
-                collections.forEach { category ->
-                    val isSelected = category == selectedCategory
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = if (isSelected) Color(0xFFEA4335) else Color.LightGray,
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .clickable { selectedCategory = category }
-                    ) {
-                        Text(
-                            text = category,
-                            color = if (isSelected) Color.White else Color.Black,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    navigationIcon = {
+                        IconButton(onClick = { /* TODO: Open Drawer */ }) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.Black)
+                        }
+                    },
+                    actions = {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile),
+                            contentDescription = "Profile",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .clickable { /* Profile Click */ },
+                            contentScale = ContentScale.Crop
                         )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    )
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(100.dp))
+                Text(
+                    text = buildAnnotatedString {
+                        append("Fast and ")
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFEA4335)
+                            )
+                        ) {
+                            append("Delicious")
+                        }
+                        append(" Food")
+                    },
+                    fontSize = 45.sp,
+                    lineHeight = 50.sp,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(50.dp))
+
+
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Search your food...") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(50.dp),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+
+                val collections = listOf("Burger", "Pizza", "Sushi", "Kebab", "Shawarma")
+                var selectedCategory by remember { mutableStateOf("Burger") }
+
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(vertical = 8.dp)
+                ) {
+                    collections.forEach { category ->
+                        val isSelected = category == selectedCategory
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected) Color(0xFFEA4335) else Color.LightGray,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .clickable { selectedCategory = category }
+                        ) {
+                            Text(
+                                text = category,
+                                color = if (isSelected) Color.White else Color.Black,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            // Food Items (Horizontal Scroll)
-            val foods = listOf(
-                Triple("Cheezy Burger", "$5.99", R.drawable.ceezyburger),
-                Triple("Hamburger", "$4.99", R.drawable.burger),
-                Triple("Double Patty", "$6.49", R.drawable.doublepetty),
-            )
+                // Food Items (Horizontal Scroll)
+                val foods = listOf(
+                    Triple("Cheezy Burger", "$5.99", R.drawable.ceezyburger),
+                    Triple("Hamburger", "$4.99", R.drawable.burger),
+                    Triple("Double Patty", "$6.49", R.drawable.doublepetty),
+                )
 
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 8.dp)
-            ) {
-                foods.forEach { (name, price, img) ->
-                    Card(
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(220.dp)
-                            .padding(end = 12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.padding(12.dp)
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(vertical = 8.dp)
+                ) {
+                    foods.forEach { (name, price, img) ->
+                        Card(
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(220.dp)
+                                .padding(end = 12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.3f))
                         ) {
-                            Image(
-                                painter = painterResource(id = img),
-                                contentDescription = name,
+                            Column(
                                 modifier = Modifier
-                                    .size(120.dp)
-                                    .clip(RoundedCornerShape(16.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                            Text(text = name, fontWeight = FontWeight.Bold)
-                            Text(text = price, color = Color(0xFFEA4335), fontWeight = FontWeight.SemiBold)
+                                    .fillMaxSize()
+                                    .padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center // center elements vertically
+                            ) {
+                                Image(
+                                    painter = painterResource(id = img),
+                                    contentDescription = name,
+                                    modifier = Modifier
+                                        .size(120.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = name, fontWeight = FontWeight.Bold)
+                                Text(
+                                    text = price,
+                                    color = Color(0xFFEA4335),
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+
                         }
                     }
                 }
@@ -174,7 +203,6 @@ fun HomeScreen() {
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
