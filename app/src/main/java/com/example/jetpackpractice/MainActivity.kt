@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             JetpackPracticeTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    LoginScreen()
+                    var currentScreen by remember { mutableStateOf("login") }
+
+                    if (currentScreen == "login") {
+                        LoginScreen(
+                            onSignUpClick = { currentScreen = "signup" }
+                        )
+                    } else {
+                        SignUpScreen(
+                            onLoginClick = { currentScreen = "login" }
+                        )
+                    }
                 }
             }
         }
@@ -45,25 +56,25 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(onSignUpClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Background image
         Image(
-            painter = painterResource(id = R.drawable.images), // replace with your own image
+            painter = painterResource(id = R.drawable.images),
             contentDescription = "Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
-        // Infinite glowing aura animation behind the card
-        val infiniteTransition = rememberInfiniteTransition(label = "")
+        // Glowing aura behind card
+        val infiniteTransition = rememberInfiniteTransition()
         val glowAlpha by infiniteTransition.animateFloat(
             initialValue = 0.2f,
             targetValue = 0.8f,
             animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 4000),
+                animation = tween(4000),
                 repeatMode = RepeatMode.Reverse
-            ), label = ""
+            )
         )
 
         Box(
@@ -72,10 +83,7 @@ fun LoginScreen() {
                 .align(Alignment.Center)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(
-                            Color(0xFF64B5F6).copy(alpha = glowAlpha),
-                            Color.Transparent
-                        ),
+                        colors = listOf(Color(0xFF64B5F6).copy(alpha = glowAlpha), Color.Transparent),
                         radius = 500f
                     )
                 )
@@ -90,7 +98,6 @@ fun LoginScreen() {
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
         ) {
-            // Blur background only
             Box(
                 modifier = Modifier
                     .matchParentSize()
@@ -101,20 +108,13 @@ fun LoginScreen() {
                     .blur(16.dp)
             )
 
-            // Card content (text, input, button) - NOT blurred
             Column(
                 modifier = Modifier
                     .padding(24.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Welcome Back",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    fontSize = 24.sp
-                )
-
+                Text("Welcome Back", color = Color.White, fontSize = 24.sp)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 var email by remember { mutableStateOf("") }
@@ -157,15 +157,203 @@ fun LoginScreen() {
                     )
                 )
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    var rememberMe by remember { mutableStateOf(false) }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = rememberMe,
+                            onCheckedChange = { rememberMe = it },
+                            colors = CheckboxDefaults.colors(
+                                checkmarkColor = Color.White,
+                                checkedColor = Color.White,
+                                uncheckedColor = Color.White.copy(alpha = 0.7f)
+                            )
+                        )
+                        Text("Remember Me", color = Color.White, fontSize = 14.sp)
+                    }
+
+                    TextButton(onClick = { /* Forgot Password */ }) {
+                        Text("Forgot Password?", color = Color.Blue, fontSize = 14.sp, fontStyle = FontStyle.Italic)
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
-                    onClick = { /* Handle login */ },
+                    onClick = { /* Handle Login */ },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007AFF))
                 ) {
                     Text("Login", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Don't have an account?", color = Color.White, fontSize = 14.sp)
+                    TextButton(onClick = onSignUpClick) {
+                        Text("Sign Up", color = Color.Blue, fontSize = 14.sp, fontStyle = FontStyle.Italic)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SignUpScreen(onLoginClick: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background image
+        Image(
+            painter = painterResource(id = R.drawable.images),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // Glowing aura behind card
+        val infiniteTransition = rememberInfiniteTransition()
+        val glowAlpha by infiniteTransition.animateFloat(
+            initialValue = 0.2f,
+            targetValue = 0.8f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(4000),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color(0xFF64B5F6).copy(alpha = glowAlpha), Color.Transparent),
+                        radius = 500f
+                    )
+                )
+                .blur(80.dp)
+        )
+
+        // Frosted glass card
+        Box(
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        color = Color.White.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .blur(16.dp)
+            )
+
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Sign Up", color = Color.White, fontSize = 24.sp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                var name by remember { mutableStateOf("") }
+                var email by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                        cursorColor = Color.White,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                        cursorColor = Color.White,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                        cursorColor = Color.White,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = { /* Handle Sign Up */ },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007AFF))
+                ) {
+                    Text("Sign Up", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Already have an account?", color = Color.White, fontSize = 14.sp)
+                    TextButton(onClick = onLoginClick) {
+                        Text("Login", color = Color.Blue, fontSize = 14.sp, fontStyle = FontStyle.Italic)
+                    }
                 }
             }
         }
@@ -176,6 +364,6 @@ fun LoginScreen() {
 @Composable
 fun PreviewLogin() {
     JetpackPracticeTheme {
-        LoginScreen()
+        LoginScreen(onSignUpClick = {})
     }
 }
