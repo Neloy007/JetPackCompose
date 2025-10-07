@@ -1,5 +1,6 @@
 package com.example.jetpackpractice
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -214,6 +216,7 @@ fun LoginScreen(onSignUpClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(onLoginClick: () -> Unit) {
+    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         // Background image
         Image(
@@ -335,13 +338,21 @@ fun SignUpScreen(onLoginClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
-                    onClick = { /* Handle Sign Up */ },
+                    onClick = {
+
+
+
+                        context.startActivity(Intent(context, HomeActivity::class.java))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007AFF))
                 ) {
                     Text("Sign Up", color = Color.White)
                 }
+
+
+
 
                 Spacer(modifier = Modifier.height(12.dp))
 
